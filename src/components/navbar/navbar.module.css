@@ -1,0 +1,17 @@
+.navbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: cornflowerblue;
+  height: 4rem;
+}
+.navbarTitle {
+  color: whitesmoke;
+  margin: 0;
+}
+.logoutBtn {
+  margin-right: 2rem;
+}
+.backPageBtn {
+  margin-left: 2rem;
+}
