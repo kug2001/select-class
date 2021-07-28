@@ -3,8 +3,13 @@ import Navbar from '../navbar/navbar';
 import styles from './home.module.css';
 
 const Home = ({firebase}) => {
-  const handleGoogleLogin = (e) => {
-    firebase.googleLogin();
+
+
+  const handleGoogleLogin = () => {
+    firebase.googleLogin()
+      .then((credential) => {
+        console.log(credential.user);
+      })
   }
 
   return(

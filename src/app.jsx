@@ -1,6 +1,8 @@
 import './app.css';
 import Login from './components/login/login';
 import Home from './components/home/home';
+import Enroll from './components/enroll/enroll';
+import Post from './components/post/post';
 import ClassList from './components/classList/classList';
 import { Switch, Route} from "react-router-dom";
 import { useHistory } from "react-router-dom";
@@ -9,7 +11,11 @@ import { useState } from 'react';
 
 function App({firebase}) {
   const history = useHistory();
-  const [userId, setUserId] = useState('');
+  const [ userId, setUserId ] = useState('');
+  const [ path, setPath ] = useState('');
+  const [ item, setItem ] = useState('');
+  const [ list, setList ] = useState('');
+
   useEffect(() => {
     firebase.authObserver(user => {
       if(user){
@@ -20,20 +26,52 @@ function App({firebase}) {
         history.push('/');
       }
     })
-  }, []);
+  }, [firebase, history]);
+
+  const handleEnroll = (path, item, list) => {
+    setPath(path);
+    setItem(item);
+    setList(list);
+    path&&history.push(`/enroll/${path}`);
+  }
+
+
 
   return (
-    <Switch>
-      <Route path="/sign-In">
-        <Login firebase={firebase} />
-      </Route>
-      <Route path="/class-List">
-        <ClassList firebase={firebase} user={userId}/>
-      </Route>
-      <Route path="/">
-        <Home firebase={firebase} />
-      </Route>
-    </Switch>
+    <>
+      <Switch>
+        <Route path="/sign-In">
+          <Login 
+            firebase={firebase} 
+          />
+        </Route>
+        <Route path="/post">
+          <Post 
+            firebase={firebase} 
+            user={userId}/>
+        </Route>
+        <Route path={`/enroll/${path}`}>
+          <Enroll 
+            firebase={firebase} 
+            user={userId} 
+            path={path} 
+            item={item} 
+          />
+        </Route>
+        <Route path="/class-List">
+          <ClassList 
+            firebase={firebase} 
+            user={userId}
+            enroll={handleEnroll}
+          />
+        </Route>
+        <Route path="/" exact={true}>
+          <Home 
+            firebase={firebase} 
+          />
+        </Route>
+      </Switch>
+    </>
   );
 }
 

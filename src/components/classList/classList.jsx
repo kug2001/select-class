@@ -2,30 +2,54 @@ import React, {useState} from 'react';
 import Navbar from '../navbar/navbar'
 import Subject from '../subject/subject';
 
-const ClassList = ({firebase, user}) => {
+import { useHistory } from 'react-router-dom';
+import { useEffect } from 'react';
+import styles from './classList.module.css';
+
+const ClassList = ({firebase, user, enroll}) => {
+
   const title = "선택특강 리스트";
-  const [list, setLset] = useState([
-    '기도강의',
-    '기도강의',
-    '기술강의',
-    '성경강의',
-    '오락강의',
-    '이성교제',
-  ]);
-  firebase.readData();
+  const [ list, setList ] = useState('');
+  const history = useHistory();
+
+  useEffect(() => {
+    const setRef = firebase.setDatabaseRef('/');
+    firebase.onDatabase(setRef)
+      .then((subject)=>{
+        console.log(subject);
+        const data = subject.val();
+        setList(Object.entries(data));
+    })
+  }, [firebase]);
+
+  const handdlePostPush = () => {
+    history.push('/post');
+  }
+  const onHandleEnroll = (path, item) => {
+    enroll(path, item, list);
+  }
 
   return(
     <>
       <Navbar title={title} firebase={firebase} user={user} />
-      <ul>
-        {list.map((item) => {
-          return(
-            <li>
-              <Subject title={item}/>
-            </li>
-          )  
-        })}
+      <ul className={styles.classListBox}>
+        {
+          list&&list.map((item) => {
+            return (
+                <Subject 
+                  item={item[1]}
+                  key={item[0]} 
+                  path={item[0]} 
+                  enroll={onHandleEnroll}
+                />
+            )
+          })
+        }
       </ul>
+      <div className={styles.btnBox}>
+        <button className={styles.subjectRegiste} onClick={handdlePostPush}>강의 등록하기</button>
+        <button className={styles.subjectRegiste} onClick={null}>강의 삭제하기</button>
+      </div>
     </>
   )
 }

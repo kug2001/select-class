@@ -14,29 +14,73 @@ export default class Firebase {
       storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET
     }
     firebase.initializeApp(firebaseConfig);
-    // console.log(firebaseConfig);
   };
+
+  //구글 로그인&로그아웃
 
   googleLogin () {
     const provider = new firebase.auth.GoogleAuthProvider();
-    console.log(provider);
-    firebase.auth()
-    .signInWithPopup(provider);
+    return firebase.auth().signInWithPopup(provider);
   }
 
   googleLogout () {
-    firebase.auth().signOut().then(() => {
-      console.log('로그아웃 되었습니다.');
-      return;
-    })
+    return firebase.auth().signOut();
   }
+
+  //유저정보 관찰자
 
   authObserver(user){
-    firebase.auth().onAuthStateChanged(user);
+    return firebase.auth().onAuthStateChanged(user);
   }
 
-  readData(){
-    const database = firebase.database();
-    console.log(database);
+  // 데이터베이스
+
+  setDatabaseRef(ref){
+    return firebase.database().ref(ref);
   }
+  setDatabase (setRef, item){
+    return new Promise((resolve, reject) => {
+        setRef.set(item);
+        resolve('저장완료');
+      })
+  }
+  removeDatabase (setRef) {
+    return new Promise((resolve, reject)=>{
+      setRef.remove();
+      resolve('강의가 취소되었습니다');
+    })
+  }
+  onDatabase (setRef) {
+    return new Promise((resolve, reject) => {
+      setRef.on('value', (snapshot) => {
+        resolve(snapshot);
+        
+      })
+    })
+  }
+  
+  updateDatabase (setRef, item) {
+    return new Promise((resolve, reject) => {
+      const update = setRef.update(item);
+      resolve(update);
+      })
+  }
+
+
+  subjectWriteData(title, speaker, discription, maxMember){
+    const setRef = firebase.database().ref();
+    return new Promise((resolve, reject) => {
+      const newSubjectRef = setRef.push();
+      newSubjectRef.set({
+        title : title,
+        speaker: speaker,
+        discription : discription,
+        maxMember : maxMember,
+        member : 0,
+      })
+    });
+  }
+
+
+  //end
 }

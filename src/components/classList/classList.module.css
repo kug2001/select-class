@@ -1,0 +1,25 @@
+.classListBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: auto;
+  margin: 1rem 0;
+}
+.btnBox {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+.btnBox > button {
+  margin: 0 2rem;
+  font-size: 1rem;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  border: transparent;
+  background-color: coral;
+  transition: all ease-in 200ms;
+}
+.btnBox > button:hover {
+  background-color: bisque;
+}
